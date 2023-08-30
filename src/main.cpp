@@ -43,9 +43,9 @@ ISR(PCINT1_vect) //houve alteracao de nivel logico
   read_keyb();
 }
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER0_OVF_vect)
 {
-  TCNT1 = 65536;
+  TCNT0 = 6;
   f_timers();
 }
 
@@ -62,10 +62,10 @@ void setup(void)
   DDRD   = 0b11111111;  //PD2 e PD3 como entrada
   DDRB   = 0b00111110; 
   DDRC = 0b01111100; //PC0 e PC1 como entradas
+  TCNT0 = 6;
   PORTD  = 0;  //inicia apagado
   PORTB  = 0;
   PORTC = 0;
-  TCNT1 = 65536;
   TIMSK1 = 0x01; //habilita a interrupcao do timer 1
   TCCR1A = 0b10100010;
   TCCR1B = 0b00011001; //PWM fast mode de 10 bits comprescaler de 8
@@ -157,7 +157,24 @@ void read_keyb(void)
 
 void change_display(void)
 {
+  static uint16_t ciclo_3999 = 0;
+  ciclo_3999 = duty_cicle1 * 0.6399;
 
+  display1 = ciclo_3999 % 10;
+  if(display1 > 9) 
+  display1 = 0;
+
+  display2 = ((ciclo_3999 % 100) - display1) / 10;
+  if(display2 > 9) 
+  display2 = 0;
+  
+  display3 = ((ciclo_3999 % 1000) - display2*10 - display1) / 100;
+  if(display3 > 9) 
+  display3 = 0;
+  
+  display4 = (ciclo_3999 - display3*100 - display2*10 - display1) / 1000;
+  if(display4 > 9) 
+  display4 = 0;
 }
 
 void cpwm(void) 
