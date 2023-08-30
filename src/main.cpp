@@ -63,6 +63,7 @@ void setup(void)
   DDRB   = 0b00111110; 
   DDRC = 0b01111100; //PC0 e PC1 como entradas
   TCNT0 = 6;
+  TCNT1 = 45536;
   PORTD  = 0;  //inicia apagado
   PORTB  = 0;
   PORTC = 0;
